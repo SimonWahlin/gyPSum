@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<plasterManifest schemaVersion="1.0"
+  xmlns="http://www.microsoft.com/schemas/PowerShell/Plaster/v1">
+  <metadata>
+    <name>DSCCompositResource</name>
+    <id>65d24c12-4204-4aa8-8950-d1f419a79c6b</id>
+    <version>1.0.0</version>
+    <title>Composit Resource for Desired State Configuration</title>
+    <description>Template for creating a Composit DSC Configuration</description>
+    <author>Simon Wahlin</author>
+    <tags>DSC, Resource, CompositConfiguration</tags>
+  </metadata>
+  <parameters>
+    <parameter name='ResourceName' type='text' prompt='Enter the name of the resource'/>
+    <parameter name='FullName' type='user-fullname' prompt='Enter your full name' store='text' />
+    <parameter name='Company' type='text' prompt='Enter company name' store='text' />
+    <parameter name='Version' type='text' prompt='Enter the version number of the module' default='0.1.0'/>
+  </parameters>
+  <content>
+    <message>&#10;&#10;Scaffolding your Composite Resource...&#10;&#10;&#10;</message>
+    <!-- Folder structure -->
+    <!-- <file source='' destination='${PLASTER_PARAM_ResourceName}/Private' /> -->
+    <!-- <file source='' destination='${PLASTER_PARAM_ResourceName}/Public' /> -->
+    <!-- <file source='' destination='${PLASTER_PARAM_ResourceName}/Script' /> -->
+    <!-- Manifest -->
+    <newModuleManifest destination='${PLASTER_PARAM_ResourceName}/${PLASTER_PARAM_ResourceName}.psd1' moduleVersion='$PLASTER_PARAM_Version' rootModule='${PLASTER_PARAM_ResourceName}.schema.psm1' author='${PLASTER_PARAM_FullName}' companyName='${PLASTER_PARAM_Company}' description='${PLASTER_PARAM_ModuleDescription}' encoding='UTF8-NoBOM'/>
+    <!-- Resource file -->
+    <file source='source/Resource.psm1' destination='${PLASTER_PARAM_ResourceName}/${PLASTER_PARAM_ResourceName}.schema.psm1'/>
+    <!-- Summary messages -->
+    <message>&#10;&#10;Your new PowerShell Desired State Composit Resource '$PLASTER_PARAM_ResourceName' has been created.&#10;&#10;</message>
+  </content>
+</plasterManifest>
