@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<plasterManifest schemaVersion="1.0"
+  xmlns="http://www.microsoft.com/schemas/PowerShell/Plaster/v1">
+  <metadata>
+    <name>CommunityPSModule</name>
+    <id>d4215a18-ea33-4786-8e3f-35bd161e961d</id>
+    <version>1.0.1</version>
+    <title>Community PS Module</title>
+    <description>Template for creating a minimal PowerShell module</description>
+    <author>Simon Wahlin</author>
+    <tags>Module, ModuleManifest</tags>
+  </metadata>
+  <parameters>
+    <parameter name='ModuleName' type='text' prompt='Enter the name of the module'/>
+    <parameter name='ModuleDescription' type='text' prompt='Enter the description for the module' default='${PLASTER_PARAM_ModuleName} module.'/>
+    <parameter name='FullName' type='user-fullname' prompt='Enter your full name' store='text' />
+    <parameter name='Company' type='text' prompt='Enter company name' store='text' />
+    <parameter name='Version' type='text' prompt='Enter the version number of the module' default='0.1.0'/>
+    <parameter name='Editor' type='choice' prompt='Select a editor for editor integration (or None):' default='0' store='text' >
+      <choice label='&amp;None' help="No editor specified." value="None"/>
+      <choice label='Visual Studio &amp;Code' help="Your editor is Visual Studio Code." value="VSCode"/>
+    </parameter>
+    <parameter name='License' type='choice' default='1' store='text' prompt='Select a license for your module'>
+      <choice label='&amp;Apache' help="Adds an Apache license file." value="Apache"/>
+      <choice label='&amp;MIT' help="Adds an MIT license file." value="MIT"/>
+      <choice label='&amp;Commercial' help="Adds a Commercial license file." value="Commercial"/>
+      <choice label='&amp;None' help="No license specified." value="None"/>
+    </parameter>
+    <parameter name='Options' type='multichoice' default='0,2,3,4,5' store='text' prompt='Select desired options'>
+      <choice label='&amp;Pester test support' help="Adds Tests directory and a starter Pester Tests file." value="Pester"/>
+      <choice label='P&amp;Sake build script' help="Adds a PSake build script that generates the module directory for publishing to the PSGallery." value="PSake"/>
+      <choice label='Invoke-&amp;Build build script' help="Adds an Invoke-Build build script that generates the module directory for publishing to the PSGallery." value="InvokeBuild"/>
+      <choice label='&amp;Gitingore' help="Adds a .gitignore file." value="Gitignore"/>
+      <choice label='&amp;Readme' help="Adds a Readme.md file." value="Readme"/>
+      <choice label='&amp;Appveyor' help="Adds an Appveyor.yml file." value="Appveyor"/>
+      <choice label='&amp;None' help="No options specified." value="None"/>
+    </parameter>
+  </parameters>
+  <content>
+    <message>&#10;&#10;Scaffolding your PowerShell Module...&#10;&#10;&#10;</message>
+    <!-- Folder structure -->
+    <file source='' destination='${PLASTER_PARAM_ModuleName}/Private' />
+    <file source='' destination='${PLASTER_PARAM_ModuleName}/Public' />
+    <file source='' destination='${PLASTER_PARAM_ModuleName}/Script' />
+    <!-- Manifest -->
+    <newModuleManifest destination='${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_ModuleName}.psd1' moduleVersion='$PLASTER_PARAM_Version' rootModule='${PLASTER_PARAM_ModuleName}.psm1' author='${PLASTER_PARAM_FullName}' companyName='${PLASTER_PARAM_Company}' description='${PLASTER_PARAM_ModuleDescription}' encoding='UTF8-NoBOM'/>
+    <!-- Module file for DEV code -->
+    <file source='source/Module.psm1' destination='${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_ModuleName}.psm1'/>
+    <!-- Pester tests -->
+    <templateFile condition="$PLASTER_PARAM_Options -contains 'Pester'" source='source/test/Module.T.ps1' destination='${PLASTER_PARAM_ModuleName}/test/${PLASTER_PARAM_ModuleName}.Tests.ps1' />
+    <!-- .gitignore -->
+    <templateFile condition="$PLASTER_PARAM_Options -contains 'Gitignore'" source='source/.gitignore' destination='${PLASTER_PARAM_ModuleName}/.gitignore' />
+    <!-- Readme.md -->
+    <templateFile condition="($PLASTER_PARAM_Options -contains 'Readme')" source='source/Readme.md' destination='${PLASTER_PARAM_ModuleName}/Readme.md' />
+    <!-- InvokeBuild -->
+    <file condition="($PLASTER_PARAM_Options -contains 'InvokeBuild')" source='source/invoke.build.ps1' destination='${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_ModuleName}.build.ps1' />
+    <file condition="($PLASTER_PARAM_Options -contains 'InvokeBuild')" source='source/buildhelpers/helpers.psm1' destination='${PLASTER_PARAM_ModuleName}/buildhelpers/helpers.psm1' />
+    <!-- Editor files -->
+    <file condition="($PLASTER_PARAM_Editor -eq 'VSCode')" source='source/editor/VSCode/settings.json' destination='${PLASTER_PARAM_ModuleName}/.vscode/settings.json' />
+    <file condition="($PLASTER_PARAM_Editor -eq 'VSCode')" source='source/editor/VSCode/launch.json' destination='${PLASTER_PARAM_ModuleName}/.vscode/launch.json' />
+    <!-- License file -->
+    <file condition="($PLASTER_PARAM_License -eq 'Apache')" source='source/license/apache-2.0.txt' destination='${PLASTER_PARAM_ModuleName}/license.txt' />
+    <templateFile condition="($PLASTER_PARAM_License -eq 'MIT')" source='source/license/MIT.txt' destination='${PLASTER_PARAM_ModuleName}/license.txt' />
+    <templateFile condition="($PLASTER_PARAM_License -eq 'Commercial')" source='source/license/CommercialLicense.md' destination='${PLASTER_PARAM_ModuleName}/license.md' />
+    <!-- Appveyor -->
+    <templateFile condition="($PLASTER_PARAM_Options -contains 'Appveyor')" source='source/appveyor.yml' destination='${PLASTER_PARAM_ModuleName}/appveyor.yml' />
+    <!-- Required modules -->
+    <requireModule name="Pester" condition="$PLASTER_PARAM_Options -contains 'Pester'" minimumVersion="3.4.0" message="Without Pester, you will not be able to run the provided Pester test to validate your module manifest file.`nWithout version 3.4.0, VS Code will not display Pester warnings and errors in the Problems panel."/>
+    <requireModule name="InvokeBuild" condition="$PLASTER_PARAM_Options -contains 'InvokeBuild'" minimumVersion="3.6.5" message="Without InvokeBuild, you will not be able to build the module and create a production version."/>
+    <!-- Summary messages -->
+    <message>&#10;&#10;Your new PowerShell module project '$PLASTER_PARAM_ModuleName' has been created.&#10;&#10;</message>
+    <message condition="$PLASTER_PARAM_Options -contains 'Pester'">&#10;A Pester test has been created to validate the module's manifest file.  Add additional tests to the test directory.&#10;You can run the Pester tests in your project by executing the 'test' task.  Press Ctrl+P, then type 'task test'.</message>
+  </content>
+</plasterManifest>
