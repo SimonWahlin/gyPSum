@@ -2,10 +2,10 @@
 <plasterManifest schemaVersion="1.0"
   xmlns="http://www.microsoft.com/schemas/PowerShell/Plaster/v1">
   <metadata>
-    <name>CommunityPSModule</name>
+    <name>PSModule</name>
     <id>d4215a18-ea33-4786-8e3f-35bd161e961d</id>
     <version>1.0.1</version>
-    <title>Community PS Module</title>
+    <title>PS Module Template</title>
     <description>Template for creating a minimal PowerShell module</description>
     <author>Simon Wahlin</author>
     <tags>Module, ModuleManifest</tags>
@@ -39,6 +39,8 @@
   <content>
     <message>&#10;&#10;Scaffolding your PowerShell Module...&#10;&#10;&#10;</message>
     <!-- Folder structure -->
+    <file source='' destination='${PLASTER_PARAM_ModuleName}/buildhelpers' />
+    <file source='source/helpers.psm1' destination='${PLASTER_PARAM_ModuleName}/Buildhelpers/helpers.psm1'/>
     <file source='' destination='${PLASTER_PARAM_ModuleName}/Private' />
     <file source='' destination='${PLASTER_PARAM_ModuleName}/Public' />
     <file source='' destination='${PLASTER_PARAM_ModuleName}/Script' />
