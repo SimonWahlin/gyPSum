@@ -25,7 +25,7 @@
     <!-- Manifest -->
     <newModuleManifest destination='${PLASTER_PARAM_ResourceName}/${PLASTER_PARAM_ResourceName}.psd1' moduleVersion='$PLASTER_PARAM_Version' rootModule='${PLASTER_PARAM_ResourceName}.schema.psm1' author='${PLASTER_PARAM_FullName}' companyName='${PLASTER_PARAM_Company}' description='${PLASTER_PARAM_ModuleDescription}' encoding='UTF8-NoBOM'/>
     <!-- Resource file -->
-    <file source='source/Resource.psm1' destination='${PLASTER_PARAM_ResourceName}/${PLASTER_PARAM_ResourceName}.schema.psm1'/>
+    <templateFile source='source/Resource.psm1' destination='${PLASTER_PARAM_ResourceName}/${PLASTER_PARAM_ResourceName}.schema.psm1' />
     <!-- Summary messages -->
     <message>&#10;&#10;Your new PowerShell Desired State Composit Resource '$PLASTER_PARAM_ResourceName' has been created.&#10;&#10;</message>
   </content>
