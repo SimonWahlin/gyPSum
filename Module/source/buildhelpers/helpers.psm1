@@ -24,7 +24,9 @@ function Merge-ModuleFiles {
     )
     process {
         $Path | Foreach-Object -Process {
-            Get-Content -Path $_ -Encoding $Encoding
+            if(Test-Path -Path $_) {
+                Get-Content -Path $_ -Encoding $Encoding
+            }
         } | Out-File -FilePath $OutputPath -Encoding $Encoding -Force
     }
 }
@@ -49,7 +51,9 @@ function Get-ScriptblockFromFile {
     )
     process {
         $Content = $Path | Foreach-Object -Process {
-            Get-Content -Path $_ -Encoding $Encoding
+            if(Test-Path -Path $_) {
+                Get-Content -Path $_ -Encoding $Encoding
+            }
         } | Out-String
         [ScriptBlock]::Create($Content)
     }

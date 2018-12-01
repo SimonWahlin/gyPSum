@@ -40,7 +40,7 @@
     <message>&#10;&#10;Scaffolding your PowerShell Module...&#10;&#10;&#10;</message>
     <!-- Folder structure -->
     <file source='' destination='${PLASTER_PARAM_ModuleName}/buildhelpers' />
-    <file source='source/helpers.psm1' destination='${PLASTER_PARAM_ModuleName}/Buildhelpers/helpers.psm1'/>
+    <file source='source/buildhelpers\helpers.psm1' destination='${PLASTER_PARAM_ModuleName}/Buildhelpers/helpers.psm1'/>
     <file source='' destination='${PLASTER_PARAM_ModuleName}/Private' />
     <file source='' destination='${PLASTER_PARAM_ModuleName}/Public' />
     <file source='' destination='${PLASTER_PARAM_ModuleName}/Script' />
@@ -49,7 +49,7 @@
     <!-- Module file for DEV code -->
     <file source='source/Module.psm1' destination='${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_ModuleName}.psm1'/>
     <!-- Pester tests -->
-    <templateFile condition="$PLASTER_PARAM_Options -contains 'Pester'" source='source/test/Module.T.ps1' destination='${PLASTER_PARAM_ModuleName}/test/${PLASTER_PARAM_ModuleName}.Tests.ps1' />
+    <templateFile condition="$PLASTER_PARAM_Options -contains 'Pester'" source='source/test/Module.T.ps1' destination='${PLASTER_PARAM_ModuleName}/test/unit/${PLASTER_PARAM_ModuleName}.Tests.ps1' />
     <!-- .gitignore -->
     <templateFile condition="$PLASTER_PARAM_Options -contains 'Gitignore'" source='source/.gitignore' destination='${PLASTER_PARAM_ModuleName}/.gitignore' />
     <!-- Readme.md -->
