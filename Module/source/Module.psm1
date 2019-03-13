@@ -1,15 +1,22 @@
 $ModulePath = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
-$PrivatePath = '{0}\private\*.ps1' -f $ModulePath
-$PublicPath = '{0}\public\*.ps1'-f $ModulePath
-$Scripts = Get-ChildItem -Path $PrivatePath, $PublicPath | Select-Object -ExpandProperty FullName
+$BuildData = Import-LocalizedData -BaseDirectory $ModulePath -FileName build.psd1
 
+Push-Location -Path $ModulePath -StackName 'DevModuleLoader'
+$Scripts = Get-ChildItem -Path $BuildData.SourceDirectories -File -Filter *.ps1 | Select-Object -ExpandProperty FullName
+if(-not [string]::IsNullOrWhiteSpace($BuildData.Prefix) -and (Test-Path -Path $BuildData.Prefix)) {
+        . $BuildData.Prefix
+}
 foreach($Script in $Scripts) {
         . $Script
 }
-
-$PublicScriptBlock = [ScriptBlock]::Create((Get-ChildItem -Path $PublicPath | Get-Content | Out-String))
-$PublicFunctions = $PublicScriptBlock.Ast.FindAll({ $args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst]},$false).Name
-$PublicAlias = $PublicScriptBlock.Ast.FindAll({ $args[0] -is [System.Management.Automation.Language.ParamBlockAst] },$true).Where{$_.TypeName.FullName -eq 'alias'}.PositionalArguments.Value
+if(-not [string]::IsNullOrWhiteSpace($BuildData.Suffix) -and (Test-Path -Path $BuildData.Suffix)) {
+        . $BuildData.Suffix
+}
+$SearchRecursive = $true
+$SearchRootOnly  = $false
+$PublicScriptBlock = [ScriptBlock]::Create('{0}' -f (Get-ChildItem -Path $BuildData.PublicFilter -ErrorAction SilentlyContinue | Get-Content -Raw | Out-String))
+$PublicFunctions = $PublicScriptBlock.Ast.FindAll({ $args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst]},$SearchRootOnly).Name
+$PublicAlias = $PublicScriptBlock.Ast.FindAll({ $args[0] -is [System.Management.Automation.Language.ParamBlockAst] },$SearchRecursive).Where{$_.TypeName.FullName -eq 'alias'}.PositionalArguments.Value
 
 $ExportParam = @{}
 if($PublicFunctions) {
@@ -21,3 +28,5 @@ if($PublicAlias) {
 if($ExportParam.Keys.Count -gt 0) {
         Export-ModuleMember @ExportParam
 }
+
+Pop-Location -StackName 'DevModuleLoader'

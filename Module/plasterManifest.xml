@@ -39,24 +39,25 @@
   <content>
     <message>&#10;&#10;Scaffolding your PowerShell Module...&#10;&#10;&#10;</message>
     <!-- Folder structure -->
-    <file source='' destination='${PLASTER_PARAM_ModuleName}/buildhelpers' />
-    <file source='source/buildhelpers\helpers.psm1' destination='${PLASTER_PARAM_ModuleName}/Buildhelpers/helpers.psm1'/>
-    <file source='' destination='${PLASTER_PARAM_ModuleName}/Private' />
-    <file source='' destination='${PLASTER_PARAM_ModuleName}/Public' />
-    <file source='' destination='${PLASTER_PARAM_ModuleName}/Script' />
+    <file source='' destination='${PLASTER_PARAM_ModuleName}/Source' />
+    <file source='' destination='${PLASTER_PARAM_ModuleName}/Source/Private' />
+    <file source='' destination='${PLASTER_PARAM_ModuleName}/Source/Public' />
+    <file source='' destination='${PLASTER_PARAM_ModuleName}/Source/Classes' />
+    <file source='source/_PrefixCode.ps1' destination='${PLASTER_PARAM_ModuleName}/Source/_PrefixCode.ps1' />
     <!-- Manifest -->
-    <newModuleManifest destination='${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_ModuleName}.psd1' moduleVersion='$PLASTER_PARAM_Version' rootModule='${PLASTER_PARAM_ModuleName}.psm1' author='${PLASTER_PARAM_FullName}' companyName='${PLASTER_PARAM_Company}' description='${PLASTER_PARAM_ModuleDescription}' encoding='UTF8-NoBOM'/>
+    <newModuleManifest destination='${PLASTER_PARAM_ModuleName}/Source/${PLASTER_PARAM_ModuleName}.psd1' moduleVersion='$PLASTER_PARAM_Version' rootModule='${PLASTER_PARAM_ModuleName}.psm1' author='${PLASTER_PARAM_FullName}' companyName='${PLASTER_PARAM_Company}' description='${PLASTER_PARAM_ModuleDescription}' encoding='UTF8-NoBOM'/>
+    <!-- Build file for ModuleBuilder -->
+    <templateFile source='source/build.psd1' destination='${PLASTER_PARAM_ModuleName}/Source/build.psd1' />
     <!-- Module file for DEV code -->
-    <file source='source/Module.psm1' destination='${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_ModuleName}.psm1'/>
+    <file source='source/Module.psm1' destination='${PLASTER_PARAM_ModuleName}/Source/${PLASTER_PARAM_ModuleName}.psm1'/>
     <!-- Pester tests -->
-    <templateFile condition="$PLASTER_PARAM_Options -contains 'Pester'" source='source/test/Module.T.ps1' destination='${PLASTER_PARAM_ModuleName}/test/unit/${PLASTER_PARAM_ModuleName}.Tests.ps1' />
+    <templateFile condition="$PLASTER_PARAM_Options -contains 'Pester'" source='source/test/Module.T.ps1' destination='${PLASTER_PARAM_ModuleName}/Test/Unit/${PLASTER_PARAM_ModuleName}.Tests.ps1' />
     <!-- .gitignore -->
     <templateFile condition="$PLASTER_PARAM_Options -contains 'Gitignore'" source='source/.gitignore' destination='${PLASTER_PARAM_ModuleName}/.gitignore' />
     <!-- Readme.md -->
     <templateFile condition="($PLASTER_PARAM_Options -contains 'Readme')" source='source/Readme.md' destination='${PLASTER_PARAM_ModuleName}/Readme.md' />
     <!-- InvokeBuild -->
     <file condition="($PLASTER_PARAM_Options -contains 'InvokeBuild')" source='source/invoke.build.ps1' destination='${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_ModuleName}.build.ps1' />
-    <file condition="($PLASTER_PARAM_Options -contains 'InvokeBuild')" source='source/buildhelpers/helpers.psm1' destination='${PLASTER_PARAM_ModuleName}/buildhelpers/helpers.psm1' />
     <!-- Editor files -->
     <file condition="($PLASTER_PARAM_Editor -eq 'VSCode')" source='source/editor/VSCode/settings.json' destination='${PLASTER_PARAM_ModuleName}/.vscode/settings.json' />
     <file condition="($PLASTER_PARAM_Editor -eq 'VSCode')" source='source/editor/VSCode/launch.json' destination='${PLASTER_PARAM_ModuleName}/.vscode/launch.json' />
@@ -71,6 +72,6 @@
     <requireModule name="InvokeBuild" condition="$PLASTER_PARAM_Options -contains 'InvokeBuild'" minimumVersion="3.6.5" message="Without InvokeBuild, you will not be able to build the module and create a production version."/>
     <!-- Summary messages -->
     <message>&#10;&#10;Your new PowerShell module project '$PLASTER_PARAM_ModuleName' has been created.&#10;&#10;</message>
-    <message condition="$PLASTER_PARAM_Options -contains 'Pester'">&#10;A Pester test has been created to validate the module's manifest file.  Add additional tests to the test directory.&#10;You can run the Pester tests in your project by executing the 'test' task.  Press Ctrl+P, then type 'task test'.</message>
+    <message condition="$PLASTER_PARAM_Options -contains 'Pester'">&#10;A Pester test has been created to validate the module's manifest file. Add additional tests to the test directory.</message>
   </content>
 </plasterManifest>
