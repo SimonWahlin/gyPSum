@@ -26,7 +26,7 @@
       <choice label='&amp;Commercial' help="Adds a Commercial license file." value="Commercial"/>
       <choice label='&amp;None' help="No license specified." value="None"/>
     </parameter>
-    <parameter name='Options' type='multichoice' default='0,2,3,4,5' store='text' prompt='Select desired options'>
+    <parameter name='Options' type='multichoice' default='0,2,3,4,5' store='text' prompt='Select desired options. For multiple options separate with commas (,).'>
       <choice label='&amp;Pester test support' help="Adds Tests directory and a starter Pester Tests file." value="Pester"/>
       <choice label='P&amp;Sake build script' help="Adds a PSake build script that generates the module directory for publishing to the PSGallery." value="PSake"/>
       <choice label='Invoke-&amp;Build build script' help="Adds an Invoke-Build build script that generates the module directory for publishing to the PSGallery." value="InvokeBuild"/>
