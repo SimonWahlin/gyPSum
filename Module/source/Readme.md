@@ -16,7 +16,7 @@ To speed up module load time and minimize the amount of files that needs to be s
 
 To build the module, make sure you have the following pre-req modules:
 
-- Pester (Required Version 4.1.1)
+- Pester (Required Version 5.3.0)
 - InvokeBuild (Required Version 3.2.1)
 - PowerShellGet (Required Version 1.6.0)
 - ModuleBuilder (Required Version 1.0.0)
