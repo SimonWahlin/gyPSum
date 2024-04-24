@@ -68,8 +68,8 @@
     <!-- Appveyor -->
     <templateFile condition="($PLASTER_PARAM_Options -contains 'Appveyor')" source='source/appveyor.yml' destination='${PLASTER_PARAM_ModuleName}/appveyor.yml' />
     <!-- Required modules -->
-    <requireModule name="Pester" condition="$PLASTER_PARAM_Options -contains 'Pester'" minimumVersion="3.4.0" message="Without Pester, you will not be able to run the provided Pester test to validate your module manifest file.`nWithout version 3.4.0, VS Code will not display Pester warnings and errors in the Problems panel."/>
-    <requireModule name="InvokeBuild" condition="$PLASTER_PARAM_Options -contains 'InvokeBuild'" minimumVersion="3.6.5" message="Without InvokeBuild, you will not be able to build the module and create a production version."/>
+    <requireModule name="Pester" condition="$PLASTER_PARAM_Options -contains 'Pester'" minimumVersion="5.3.0" message="Without Pester, you will not be able to run the provided Pester test to validate your module manifest file."/>
+    <requireModule name="InvokeBuild" condition="$PLASTER_PARAM_Options -contains 'InvokeBuild'" minimumVersion="3.2.1" message="Without InvokeBuild, you will not be able to build the module and create a production version."/>
     <requireModule name="ModuleBuilder" condition="$PLASTER_PARAM_Options -contains 'InvokeBuild'" minimumVersion="1.0.0" message="Without ModuleBuilder, you will not be able to build the module and create a production version."/>
     <!-- Summary messages -->
     <message>&#10;&#10;Your new PowerShell module project '$PLASTER_PARAM_ModuleName' has been created.&#10;&#10;</message>
