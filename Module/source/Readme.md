@@ -20,6 +20,7 @@ To build the module, make sure you have the following pre-req modules:
 - InvokeBuild (Required Version 3.2.1)
 - PowerShellGet (Required Version 1.6.0)
 - ModuleBuilder (Required Version 1.0.0)
+- PSScriptAnalyzer (Required Version 1.0.1)
 
 Start the build by running the following command from the project root:
 

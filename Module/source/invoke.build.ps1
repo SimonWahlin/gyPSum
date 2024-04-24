@@ -2,6 +2,7 @@
 #Requires -Modules @{ModuleName='PowerShellGet';ModuleVersion='1.6.0'}
 #Requires -Modules @{ModuleName='Pester';ModuleVersion='4.1.1'}
 #Requires -Modules @{ModuleName='ModuleBuilder';ModuleVersion='1.0.0'}
+#Requires -Modules @{ModuleName='PSScriptAnalyzer';ModuleVersion='1.0.1'}
 
 $Script:IsAppveyor = $null -ne $env:APPVEYOR
 $Script:ModuleName = Get-Item -Path $BuildRoot | Select-Object -ExpandProperty Name
@@ -9,6 +10,38 @@ Get-Module -Name $ModuleName | Remove-Module -Force
 
 task Clean {
     Remove-Item -Path ".\Bin" -Recurse -Force -ErrorAction SilentlyContinue
+}
+
+task Analyze {
+    Write-Build Yellow "`n`n`nStatic code analysis"
+    $SourceScriptAnalyzerParams = @{
+        Path = "$BuildRoot\Source"
+        ExcludeRule = "PSUseToExportFieldsInManifest"
+        Recurse = $true
+    }
+
+    $TestScriptAnalyzerParams = @{
+        Path = "$BuildRoot\Test"
+        ExcludeRule = "PSReviewUnusedParameter", "PSUseDeclaredVarsMoreThanAssignments" # It doesn't like the way Pester uses things from different blocks
+        Recurse = $true
+    }
+
+    $AnalyzerResults = @()
+
+    $AnalyzerResults += Invoke-ScriptAnalyzer @SourceScriptAnalyzerParams
+    $AnalyzerResults += Invoke-ScriptAnalyzer @TestScriptAnalyzerParams
+    
+
+    If ($AnalyzerResults) {
+        $AnalyzerResults | Format-Table -AutoSize
+
+        If($AnalyzerResults.Severity -eq "Error") {
+            throw "PSScriptAnalyzer found errors"
+        }
+        If($AnalyzerResults.Severity -eq "Warning") {
+            Write-Warning "PSScriptAnalyzer found warnings"
+        }
+    }
 }
 
 task TestCode {
@@ -61,7 +94,7 @@ task TestBuild {
     $CodeCoverageResult | Group-Object -Property SourceFile | Sort-Object -Property Count | Select-Object -Property Count, Name -Last 10
 }
 
-task . Clean, TestCode, Build
+task . Clean, Analyze, TestCode, Build
 
 task Build CompilePSM, MakeHelp, TestBuild
 
