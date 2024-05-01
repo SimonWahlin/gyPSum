@@ -68,7 +68,8 @@ task TestBuild {
     $CodeCoverageResult = $TestResult | Convert-CodeCoverage -SourceRoot "$PSScriptRoot\Source"
     $CodeCoveragePercent = $TestResult.CodeCoverage.CommandsExecutedCount/$TestResult.CodeCoverage.CommandsAnalyzedCount*100 -as [int]
     Write-Verbose -Message "CodeCoverage is $CodeCoveragePercent%" -Verbose
-    $MissedCommands = $CodeCoverageResult | Group-Object -Property SourceFile | Sort-Object -Property Count -Descending | Select-Object -Property Count, Name -First 10
+    $MissedCommands = @()
+    $MissedCommands += $CodeCoverageResult | Group-Object -Property SourceFile | Sort-Object -Property Count -Descending | Select-Object -Property Count, Name -First 10
 
     if($MissedCommands.length -gt 0) {
         Write-Verbose -Message "Commands Missed | Source File" -Verbose
