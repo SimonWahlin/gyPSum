@@ -1,6 +1,6 @@
 #Requires -Modules @{ModuleName='InvokeBuild';ModuleVersion='3.2.1'}
 #Requires -Modules @{ModuleName='PowerShellGet';ModuleVersion='1.6.0'}
-#Requires -Modules @{ModuleName='Pester';ModuleVersion='4.1.1'}
+#Requires -Modules @{ModuleName='Pester';ModuleVersion='5.3.0'}
 #Requires -Modules @{ModuleName='ModuleBuilder';ModuleVersion='1.0.0'}
 
 $Script:IsAppveyor = $null -ne $env:APPVEYOR
@@ -13,7 +13,7 @@ task Clean {
 
 task TestCode {
     Write-Build Yellow "`n`n`nTesting dev code before build"
-    $TestResult = Invoke-Pester -Script "$PSScriptRoot\Test\Unit" -Tag Unit -Show 'Header','Summary' -PassThru
+    $TestResult = Invoke-Pester -Path "$PSScriptRoot\Test\Unit" -Tag Unit -PassThru
     if($TestResult.FailedCount -gt 0) {throw 'Tests failed'}
 }
 
@@ -42,9 +42,19 @@ task MakeHelp -if (Test-Path -Path "$PSScriptRoot\Docs") {
 
 task TestBuild {
     Write-Build Yellow "`n`n`nTesting compiled module"
-    $Script =  @{Path="$PSScriptRoot\test\Unit"; Parameters=@{ModulePath=$Script:CompileResult.ModuleBase}}
-    $CodeCoverage = (Get-ChildItem -Path $Script:CompileResult.ModuleBase -Filter *.psm1).FullName
-    $TestResult = Invoke-Pester -Script $Script -CodeCoverage $CodeCoverage -Show None -PassThru
+
+    $container = New-PesterContainer -Path "$PSScriptRoot\test\Unit" -Data @{ModulePath=$Script:CompileResult.ModuleBase}
+
+    $config = New-PesterConfiguration
+    $config.CodeCoverage.Enabled = $true
+    $config.CodeCoverage.Path = (Get-ChildItem -Path $Script:CompileResult.ModuleBase -Filter *.psm1).FullName
+    $config.Output.Verbosity = "None"
+    $config.Run.Container = $container
+    $config.Run.PassThru = $true
+
+    $TestResult = Invoke-Pester -Configuration $config
+    $TestResult.CodeCoverage|Add-Member -MemberType NoteProperty -Name MissedCommands -Value $TestResult.CodeCoverage.CommandsMissed
+    Remove-Item $PSScriptRoot\coverage.xml -ErrorAction SilentlyContinue
 
     if($TestResult.FailedCount -gt 0) {
         Write-Warning -Message "Failing Tests:"
@@ -55,10 +65,20 @@ task TestBuild {
         throw 'Tests failed'
     }
 
-    $CodeCoverageResult = $TestResult | Convert-CodeCoverage -SourceRoot "$PSScriptRoot\Source" -Relative
-    $CodeCoveragePercent = $TestResult.CodeCoverage.NumberOfCommandsExecuted/$TestResult.CodeCoverage.NumberOfCommandsAnalyzed*100 -as [int]
+    $CodeCoverageResult = $TestResult | Convert-CodeCoverage -SourceRoot "$PSScriptRoot\Source"
+    $CodeCoveragePercent = $TestResult.CodeCoverage.CommandsExecutedCount/$TestResult.CodeCoverage.CommandsAnalyzedCount*100 -as [int]
     Write-Verbose -Message "CodeCoverage is $CodeCoveragePercent%" -Verbose
-    $CodeCoverageResult | Group-Object -Property SourceFile | Sort-Object -Property Count | Select-Object -Property Count, Name -Last 10
+    $MissedCommands = @()
+    $MissedCommands += $CodeCoverageResult | Group-Object -Property SourceFile | Sort-Object -Property Count -Descending | Select-Object -Property Count, Name -First 10
+
+    if($MissedCommands.length -gt 0) {
+        Write-Verbose -Message "Commands Missed | Source File" -Verbose
+        Write-Verbose -Message "----------------|------------" -Verbose
+        $MissedCommands | ForEach-Object {
+            $Line = "{0,15} | {1}" -f $_.Count, $_.Name
+            Write-Verbose $Line -Verbose
+        }
+    }
 }
 
 task . Clean, TestCode, Build
