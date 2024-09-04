@@ -1,0 +1,5 @@
+enum <%= $PLASTER_PARAM_EnumName %>
+{
+    Thing = 1
+    OtherThing = 2
+}

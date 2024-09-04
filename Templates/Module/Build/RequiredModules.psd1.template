@@ -1,0 +1,54 @@
+@{
+    <#
+        This is only required if you need to use the method PowerShellGet & PSDepend
+        It is not required for PSResourceGet or ModuleFast (and will be ignored).
+        See Resolve-Dependency.psd1 on how to enable methods.
+    #>
+    #PSDependOptions             = @{
+    #    AddToPath  = $true
+    #    Target     = 'output\RequiredModules'
+    #    Parameters = @{
+<%
+    if (-not [System.String]::IsNullOrEmpty($PLASTER_PARAM_CustomRepo)) {
+                    # Pull Modules from Custom Repository Name
+"    #        Repository = '$PLASTER_PARAM_CustomRepo'"
+    }
+    else {
+"    #        Repository = 'PSGallery'"
+    }
+%>
+    #    }
+    #}
+
+    InvokeBuild                 = 'latest'
+    PSScriptAnalyzer            = 'latest'
+    Pester                      = 'latest'
+    ModuleBuilder               = 'latest'
+    ChangelogManagement         = 'latest'
+    Sampler                     = 'latest'
+<%
+    If ($PLASTER_PARAM_ModuleType -in @('dsccommunity','CompleteSample','CompleteModule') -or $PLASTER_PARAM_UseGitHub -eq 'true'  -or $PLASTER_PARAM_Features -Contains ('All') -or $PLASTER_PARAM_Features -Contains ('DSCResources')) {
+@"
+    'Sampler.GitHubTasks'       = 'latest'
+"@
+    }
+%>
+<%
+    If ($PLASTER_PARAM_ModuleType -in @('dsccommunity','CompleteSample','CompleteModule') -or $PLASTER_PARAM_Features -Contains ('All') -or $PLASTER_PARAM_Features -Contains ('DSCResources')) {
+@"
+    MarkdownLinkCheck           = 'latest'
+"@
+    }
+%>
+<%
+    If ($PLASTER_PARAM_ModuleType -in @('dsccommunity','CompleteSample') -or $PLASTER_PARAM_Features -Contains ('All') -or $PLASTER_PARAM_Features -Contains ('DSCResources')) {
+@"
+    'DscResource.Common'        = 'latest'
+    'DscResource.Test'          = 'latest'
+    'DscResource.AnalyzerRules' = 'latest'
+    xDscResourceDesigner        = 'latest'
+    'DscResource.DocGenerator'  = 'latest'
+"@
+    }
+%>
+}
