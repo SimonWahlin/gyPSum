@@ -1,4 +1,4 @@
-function <%= $PLASTER_PARAM_PrivateFunctionName %>
+function Get-PrivateFunction
 {
     <#
       .SYNOPSIS

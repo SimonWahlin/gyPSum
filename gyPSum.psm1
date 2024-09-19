@@ -2,7 +2,10 @@ function New-gyPSumModule {
     [CmdletBinding()]
     param(
         [Parameter()]
-        $TemplatePath
+        [string]$DestinationPath = $null,
+
+        [Parameter()]
+        [string]$TemplatePath = $null
     )
     # Dynamic param logic proudly stolen from Invoke-Plaster
     # Process the template's Plaster manifest file to convert parameters defined there into dynamic parameters.
@@ -98,8 +101,11 @@ function New-gyPSumModule {
         $PlasterParam = @{}
         foreach($key in $PSBoundParameters.Keys) {
             if($key -eq 'TemplatePath') {continue}
+            if($key -eq 'DestinationPath' -and $null -eq $PSBoundParameters[$key]) {continue}
             $PlasterParam[$key] = $PSBoundParameters[$key]
         }
         Invoke-Plaster -TemplatePath $ResolvedTemplatePath @PlasterParam
     }
 }
+
+Export-ModuleMember -Function 'New-gyPSumModule'
