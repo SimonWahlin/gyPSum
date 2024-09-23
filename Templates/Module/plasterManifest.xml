@@ -45,15 +45,11 @@
     <!--  DESCRIPTION  -->
     <parameter name="ModuleDescription" type="text" prompt="Description of this module" />
     
-    <!--  CUSTOM REPO/GALLERY  -->
-    <parameter name="CustomRepo" default="PSGallery" type="text" 
-      prompt="Do you pull from default repository (PSGallery) or a custom repository?" />
-    
     <!--  MODULE VERSION  -->
     <parameter name="ModuleVersion" type="text" prompt="Module version"  default="0.0.1" />
 
     <!--  USE GIT  -->
-    <parameter name="UseGit" type="choice" prompt="Will you use Git for source control?" default="1" 
+    <parameter name="UseGit" type="choice" prompt="Will create a gitignore file and show parameters related to git" default="1" 
       condition="$PLASTER_PARAM_ModuleType -in @('CustomModule')" >
       <choice label="&amp;Yes" value="true" />
       <choice label="&amp;No" value="false" />
@@ -93,7 +89,8 @@
     </parameter>
 
     <!--  LICENSE  -->
-    <parameter store="text"  name="LicenseType" type="choice" prompt="What license do you want?" default="0" >
+    <parameter store="text"  name="LicenseType" type="choice" prompt="What license do you want?" default="0"
+      condition="$PLASTER_PARAM_ModuleType -in @('CustomModule')" >
 			<choice label="&amp;MIT"
               help="Adds an MIT license file."
               value="MIT" />
@@ -108,14 +105,15 @@
     </parameter>
 
     <!--  SOURCE DIRECTORY  -->
-    <parameter store="text" name="SourceDirectory" type="choice" prompt="What name do you give your source folder?" default="0">
+    <parameter store="text" name="SourceDirectory" type="choice" prompt="What name do you give your source folder?" default="0"
+      condition="$PLASTER_PARAM_ModuleType -in @('CustomModule','FullModule')" >
           <choice label="&amp;Source" value="Source" />
           <choice label="&amp;The Module's name (${PLASTER_PARAM_ModuleName})" value="${PLASTER_PARAM_ModuleName}" />
           <choice label="s&amp;rc" value="src" />
     </parameter>
 
     <!--  FEATURES  -->
-    <parameter name="Features" type="multichoice" prompt="What feature would you like to add to your project?" default="0" condition="$PLASTER_PARAM_ModuleType -eq 'CustomModule'" >
+    <parameter name="Features" type="multichoice" prompt="What feature would you like to add to your project?" default="0,11" condition="$PLASTER_PARAM_ModuleType -eq 'CustomModule'" >
       <choice label="&amp;Unit Tests"
               help="Adds Tests folders and example with your features."
               value="UnitTests"/>
@@ -280,17 +278,8 @@
         companyName="$PLASTER_PARAM_ModuleAuthor"
         description="$PLASTER_PARAM_ModuleDescription"
         rootModule="$PLASTER_PARAM_ModuleName.psm1"
-        condition="-not (Test-Path -Path '${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1')"
+        condition="-not (Test-Path -Path &quot;${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1&quot;)"
     />
-        <!-- 
-        prerelease=""
-        releaseNotes=""
-        functionsToExport="@()"
-        cmdletsToExport="@()"
-        variablesToExport="@()"
-        aliasesToExport="@()"
-        requiredModules="@()" 
-        -->
 
     <!-- Add Prerelease property if it does not exist -->
     <modify path="${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1"
