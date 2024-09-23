@@ -85,14 +85,6 @@
       <choice label="&amp;No" value="false" />
     </parameter>
 
-    <!--  GITHUB OWNER  -->
-    <parameter name="GitHubOwner" default="MyOrgName" type="text" 
-			prompt="What is the name of the GitHub owner (personal or organization account) that will publish the module?" 
-			condition="$PLASTER_PARAM_UseGitHub -eq 'true'" />
-
-    <!-- <parameter name="GitHubOwnerDscCommunity" default="dsccommunity" type="text" prompt="What is the name of the GitHub owner (personal or organization account) that will publish the module?" 
-		condition="$PLASTER_PARAM_ModuleType -in @('dsccommunity')" /> -->
-
     <!--  VSCODE  -->
     <parameter name="UseVSCode" type="choice" prompt="Will you use Visual Studio Code as the code editor for the project?" 
 			default="0" condition="$PLASTER_PARAM_ModuleType -in @('CustomModule')" >
@@ -124,21 +116,12 @@
 
     <!--  FEATURES  -->
     <parameter name="Features" type="multichoice" prompt="What feature would you like to add to your project?" default="0" condition="$PLASTER_PARAM_ModuleType -eq 'CustomModule'" >
-
-      <choice label="&amp;Classes"
-              help="Adds PSv5+ Classes folders."
-              value="Classes"/>
-
-      <choice label="&amp;Git ignore"
-              help="Adds project .gitignore."
-              value="git"/>
-
       <choice label="&amp;Unit Tests"
               help="Adds Tests folders and example with your features."
               value="UnitTests"/>
 
       <choice label="&amp;Build"
-              help="Adds Build folders and scripts."
+              help="Adds Build scripts."
               value="Build"/>
     </parameter>
   </parameters>
@@ -427,7 +410,7 @@
     />
 
    <!-- SECURITY MD GENERIC -->
-   <file source="../Build/SECURITY.generic.md"
+   <file source="SECURITY.md"
           destination="${PLASTER_PARAM_ModuleName}/SECURITY.md"
           condition="${PLASTER_PARAM_ModuleType} -in @('FullModule')"
     />
