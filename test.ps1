@@ -19,18 +19,16 @@ $testcases = @(
         ModuleType        = 'CustomModule'
         UseGit            = $true
         MainGitBranch     = 'main'
-        UseGitVersion     = $true # NOT WORKING
+        UseGitVersion     = $true
         UseGitHub         = $false
         UseAzurePipelines = $false
         UseVSCode         = $true
-        LicenseType       = 'MIT' # NOT WORKING
+        LicenseType       = 'MIT'
         SourceDirectory   = 'Source'
         Features          = @()
     },
     @{
-        ModuleType        = 'MinimalModule' 
-            # NO SOURCE DIRECTORY
-            # 
+        ModuleType        = 'MinimalModule'
     },
     @{
         ModuleType        = 'FullModule'
@@ -43,19 +41,19 @@ $testcases = @(
         UseGitHub         = $true
         UseAzurePipelines = $false
         UseVSCode         = $true
-        LicenseType       = 'MIT' # NOT WORKING
+        LicenseType       = 'MIT'
         SourceDirectory   = 'Source'
-        Features          = @('Unittests')
+        Features          = @('Unittests') # NO MODULE TESTS, ONLY FOLDERS WITH TESTS
     },
     @{
         ModuleType        = 'CustomModule'
         UseGit            = $true
         MainGitBranch     = 'main'
-        UseGitVersion     = $false # NOT WORKING
+        UseGitVersion     = $false
         UseGitHub         = $true
         UseAzurePipelines = $true
-        UseVSCode         = $false # NOT WORKING
-        LicenseType       = 'MIT' # NOT WORKING
+        UseVSCode         = $false
+        LicenseType       = 'MIT'
         SourceDirectory   = 'Source'
         Features          = @('build')
     },
@@ -63,11 +61,11 @@ $testcases = @(
         ModuleType        = 'CustomModule'
         UseGit            = $true
         MainGitBranch     = 'main'
-        UseGitVersion     = $false # NOT WORKING
+        UseGitVersion     = $false
         UseGitHub         = $true
         UseAzurePipelines = $true
-        UseVSCode         = $false # NOT WORKING
-        LicenseType       = 'MIT' # NOT WORKING
+        UseVSCode         = $false
+        LicenseType       = 'MIT'
         SourceDirectory   = 'src'
         Features          = @()
     },
@@ -75,11 +73,11 @@ $testcases = @(
         ModuleType        = 'CustomModule'
         UseGit            = $true
         MainGitBranch     = 'main'
-        UseGitVersion     = $false # NOT WORKING
+        UseGitVersion     = $false
         UseGitHub         = $true
         UseAzurePipelines = $true
-        UseVSCode         = $false # NOT WORKING
-        LicenseType       = 'MIT' # NOT WORKING
+        UseVSCode         = $false
+        LicenseType       = 'MIT'
     }
 )
 

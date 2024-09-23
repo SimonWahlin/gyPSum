@@ -11,8 +11,7 @@
     <tags>Module, ModuleManifest</tags>
   </metadata>
   
-  <parameters>
-    
+  <parameters>  
     <!-- 
     Supports three scenarios:
       * Full Module
@@ -90,7 +89,7 @@
 
     <!--  LICENSE  -->
     <parameter store="text"  name="LicenseType" type="choice" prompt="What license do you want?" default="0"
-      condition="$PLASTER_PARAM_ModuleType -in @('CustomModule')" >
+      condition="$PLASTER_PARAM_ModuleType -in @('CustomModule', 'FullModule')" >
 			<choice label="&amp;MIT"
               help="Adds an MIT license file."
               value="MIT" />
@@ -113,7 +112,7 @@
     </parameter>
 
     <!--  FEATURES  -->
-    <parameter name="Features" type="multichoice" prompt="What feature would you like to add to your project?" default="0,11" condition="$PLASTER_PARAM_ModuleType -eq 'CustomModule'" >
+    <parameter name="Features" type="multichoice" prompt="What feature would you like to add to your project?" default="0,1" condition="$PLASTER_PARAM_ModuleType -eq 'CustomModule'" >
       <choice label="&amp;Unit Tests"
               help="Adds Tests folders and example with your features."
               value="UnitTests"/>
@@ -127,7 +126,7 @@
   <content>
     <!--   SOURCE MAIN Folder -->
     <file source=""
-          destination="${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}"
+          destination="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')"
     />
 
     <!--   PESTER MAIN FOLDER -->
@@ -138,94 +137,94 @@
 
     <!--   CLASSES Folder-->
     <file source=""
-          destination="${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/Classes"
+          destination="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/Classes"
     />
 
     <!--   CLASSES Samples Files -->
-    <file source='../Classes/Classes/1.class1.ps1'
-          destination='${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/Classes/1.class1.ps1'
+    <file source="../Classes/Classes/1.class1.ps1"
+          destination="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/Classes/1.class1.ps1"
     />
-    <file source='../Classes/Classes/2.class2.ps1'
-          destination='${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/Classes/2.class2.ps1'
+    <file source="../Classes/Classes/2.class2.ps1"
+          destination="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/Classes/2.class2.ps1"
     />
-    <file source='../Classes/Classes/3.class11.ps1'
-          destination='${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/Classes/3.class11.ps1'
+    <file source="../Classes/Classes/3.class11.ps1"
+          destination="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/Classes/3.class11.ps1"
     />
-    <file source='../Classes/Classes/4.class12.ps1'
-          destination='${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/Classes/4.class12.ps1'
+    <file source="../Classes/Classes/4.class12.ps1"
+          destination="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/Classes/4.class12.ps1"
     />
 
     <!--   UNIT TESTS Classes Sample Files -->
-    <file source='../Classes/tests/class1.tests.ps1'
-          destination='${PLASTER_PARAM_ModuleName}/Tests/Classes/class1.tests.ps1'
+    <file source="../Classes/tests/class1.tests.ps1"
+          destination="${PLASTER_PARAM_ModuleName}/Tests/Classes/class1.tests.ps1"
           condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_Features} -Contains ('UnitTests')"
     />
-    <file source='../Classes/tests/class2.tests.ps1'
-          destination='${PLASTER_PARAM_ModuleName}/Tests/Classes/class2.tests.ps1'
+    <file source="../Classes/tests/class2.tests.ps1"
+          destination="${PLASTER_PARAM_ModuleName}/Tests/Classes/class2.tests.ps1"
           condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_Features} -Contains ('UnitTests')"
     />
-    <file source='../Classes/tests/class11.tests.ps1'
-          destination='${PLASTER_PARAM_ModuleName}/Tests/Classes/class11.tests.ps1'
+    <file source="../Classes/tests/class11.tests.ps1"
+          destination="${PLASTER_PARAM_ModuleName}/Tests/Classes/class11.tests.ps1"
           condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_Features} -Contains ('UnitTests')"
     />
-    <file source='../Classes/tests/class12.tests.ps1'
-          destination='${PLASTER_PARAM_ModuleName}/Tests/Classes/class12.tests.ps1'
+    <file source="../Classes/tests/class12.tests.ps1"
+          destination="${PLASTER_PARAM_ModuleName}/Tests/Classes/class12.tests.ps1"
           condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_Features} -Contains ('UnitTests')"
     />
 
     <!--   PRIVATE FUNCTIONS Folder-->
     <file source=""
-          destination="${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/Private"
+          destination="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/Private"
     />
 
     <!--   PRIVATE FUNCTION Sample -->
-    <file source='../PrivateFunction/Get-PrivateFunction.ps1.template'
-          destination='${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/Private/Get-PrivateFunction.ps1'
+    <file source="../PrivateFunction/Get-PrivateFunction.ps1.template"
+          destination="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/Private/Get-PrivateFunction.ps1"
     />
 
     <!--   UNIT TESTS Private Functions folder -->
-    <file source=''
-          destination='${PLASTER_PARAM_ModuleName}/Tests/Private'
+    <file source=""
+          destination="${PLASTER_PARAM_ModuleName}/Tests/Private"
           condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_Features} -Contains ('UnitTests')"
     />
 
     <!--   UNIT TESTS Private Functions Sample Files -->
-    <templateFile source='../PrivateFunction/Get-PrivateFunction.tests.ps1.template'
-          destination='${PLASTER_PARAM_ModuleName}/Tests/Private/Get-PrivateFunction.tests.ps1'
+    <templateFile source="../PrivateFunction/Get-PrivateFunction.tests.ps1.template"
+          destination="${PLASTER_PARAM_ModuleName}/Tests/Private/Get-PrivateFunction.tests.ps1"
           condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_Features} -Contains ('UnitTests')"
     />
 
     <!--   PUBLIC FUNCTIONS Folder -->
     <file source=""
-          destination="${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/Public"
+          destination="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/Public"
     />
 
     <!--   PUBLIC FUNCTION Sample -->
-    <file source='../PublicFunction/Get-Something.ps1.template'
-          destination='${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/Tests/Public/Get-Something.ps1'
+    <templateFile source="../PublicFunction/Get-Something.ps1.template"
+          destination="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/Public/Get-Something.ps1"
     />
 
     <!--   UNIT TESTS Public folder -->
-    <file source=''
-          destination='${PLASTER_PARAM_ModuleName}/Tests/Public'
+    <file source=""
+          destination="${PLASTER_PARAM_ModuleName}/Tests/Public"
           condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_Features} -Contains ('UnitTests')"
     />
 
     <!--   UNIT TESTS Public Functions Sample Files -->
-    <templateFile source='../PublicFunction/Get-Something.tests.ps1.template'
-          destination='${PLASTER_PARAM_ModuleName}/Tests/Public/Get-Something.tests.ps1'
+    <templateFile source="../PublicFunction/Get-Something.tests.ps1.template"
+          destination="${PLASTER_PARAM_ModuleName}/Tests/Public/Get-Something.tests.ps1"
           condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_Features} -Contains ('UnitTests')"
     />
 
     <!--   QUALITY TESTS for Module -->
     <templateFile source="module.tests.ps1.template"
           destination="${PLASTER_PARAM_ModuleName}/Tests/module.tests.ps1"
-          condition="${PLASTER_PARAM_ModuleType} -in @('FullModule')"
+          condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_Features} -Contains ('UnitTests')"
     />
     
     <!--   WikiSource FOLDER -->
     <!-- <file source=""
-          destination="${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/WikiSource"
+          destination="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/WikiSource"
           condition="${PLASTER_PARAM_Features} -Contains 'All' -or ${PLASTER_PARAM_ModuleType} -in @('dsccommunity','FullModule')"
     /> -->
 
@@ -272,18 +271,18 @@
     />
     
     <!-- MODULE MANIFEST -->
-    <newModuleManifest destination="${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1"
+    <newModuleManifest destination="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1"
         moduleVersion="$PLASTER_PARAM_ModuleVersion"
         author="$PLASTER_PARAM_ModuleAuthor"
         companyName="$PLASTER_PARAM_ModuleAuthor"
         description="$PLASTER_PARAM_ModuleDescription"
         rootModule="$PLASTER_PARAM_ModuleName.psm1"
-        condition="-not (Test-Path -Path &quot;${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1&quot;)"
+        condition="-not (Test-Path -Path &quot;${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1&quot;)"
     />
 
     <!-- Add Prerelease property if it does not exist -->
-    <modify path="${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1"
-        condition="Test-Path &quot;${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1&quot;">
+    <modify path="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1"
+        condition="Test-Path &quot;${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1&quot;">
             <replace condition="$PLASTER_FileContent -notmatch 'Prerelease\s*='">
                   <original><![CDATA[(?mi)^(?<psdata>(?<newline>\s*)PSData \= @\{\r\n)(?<end>.*)]]></original>
                   <substitute>${psdata}${newline}    # Prerelease = ''${end}</substitute>
@@ -291,8 +290,8 @@
     </modify>
 
     <!-- Make sure Prerelease property is not commented -->
-    <modify path="${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1"
-        condition="Test-Path &quot;${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1&quot;">
+    <modify path="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1"
+        condition="Test-Path &quot;${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1&quot;">
             <replace condition="$PLASTER_FileContent -match '\#\s*Prerelease\s='">
                   <original><![CDATA[\#\s*Prerelease\s=]]></original>
                   <substitute>Prerelease = </substitute>
@@ -300,8 +299,8 @@
     </modify>
 
      <!-- Make sure ReleaseNotes property is not commented -->
-    <modify path="${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1"
-        condition="Test-Path &quot;${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1&quot;">
+    <modify path="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1"
+        condition="Test-Path &quot;${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1&quot;">
             <replace condition="$PLASTER_FileContent -match '#\s*ReleaseNotes\s*=\s*'">
                   <original><![CDATA[#\s*ReleaseNotes\s*=\s*]]></original>
                   <substitute>ReleaseNotes = </substitute>
@@ -309,8 +308,8 @@
     </modify>
 
     <!-- Set FunctionsToExport property to recommended value -->
-    <modify path="${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1"
-        condition="Test-Path &quot;${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1&quot;">
+    <modify path="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1"
+        condition="Test-Path &quot;${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1&quot;">
             <replace condition="$PLASTER_FileContent -match 'FunctionsToExport\s*=\s*''\*'''">
                   <original><![CDATA[FunctionsToExport\s*=\s*'\*']]></original>
                   <substitute>FunctionsToExport = @()</substitute>
@@ -318,8 +317,8 @@
     </modify>
 
     <!-- Set CmdletsToExport property to recommended value -->
-    <modify path="${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1"
-        condition="Test-Path &quot;${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1&quot;">
+    <modify path="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1"
+        condition="Test-Path &quot;${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1&quot;">
             <replace condition="$PLASTER_FileContent -match 'CmdletsToExport\s*=\s*''\*'''">
                   <original><![CDATA[CmdletsToExport\s*=\s*'\*']]></original>
                   <substitute>CmdletsToExport = @()</substitute>
@@ -327,8 +326,8 @@
     </modify>
 
     <!-- Set VariablesToExport property to recommended value -->
-    <modify path="${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1"
-        condition="Test-Path &quot;${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1&quot;">
+    <modify path="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1"
+        condition="Test-Path &quot;${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1&quot;">
             <replace condition="$PLASTER_FileContent -match 'VariablesToExport\s*=\s*''\*'''">
                   <original><![CDATA[VariablesToExport\s*=\s*'\*']]></original>
                   <substitute>VariablesToExport = @()</substitute>
@@ -336,8 +335,8 @@
     </modify>
 
     <!-- Set AliasesToExport property to recommended value -->
-    <modify path="${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1"
-        condition="Test-Path &quot;${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1&quot;">
+    <modify path="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1"
+        condition="Test-Path &quot;${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1&quot;">
             <replace condition="$PLASTER_FileContent -match 'AliasesToExport\s*=\s*''\*'''">
                   <original><![CDATA[AliasesToExport\s*=\s*'\*']]></original>
                   <substitute>AliasesToExport = @()</substitute>
@@ -345,8 +344,8 @@
     </modify>
 
     <!-- Set RequiredModules property to recommended value -->
-    <modify path="${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1"
-        condition="Test-Path &quot;${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1&quot;">
+    <modify path="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1"
+        condition="Test-Path &quot;${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1&quot;">
             <replace condition="$PLASTER_FileContent -match '#\s*RequiredModules\s*=\s*@\(\s*\)'">
                   <original><![CDATA[#\s*RequiredModules\s*=\s*@\(\s*\)]]></original>
                   <substitute>RequiredModules = @()</substitute>
@@ -354,30 +353,30 @@
     </modify>
 
     <!-- Remove blank lines from end of module manifest (seems to be a bug using <modify> that generates additional blank lines at end of file) -->
-    <modify path="${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1"
-        condition="Test-Path &quot;${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psd1&quot;">
+    <modify path="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1"
+        condition="Test-Path &quot;${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1&quot;">
             <replace>
-                  <original><![CDATA[}\n*$]]></original>
-                  <substitute>}</substitute>
+                  <original><![CDATA[(})\n+$]]></original>
+                  <substitute>$1</substitute>
             </replace>
     </modify>
 
     <templateFile
         source="module.template"
-        destination="${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psm1"
-        condition="-not (Test-Path &quot;${PLASTER_PARAM_ModuleName}/${PLASTER_PARAM_SourceDirectory}/${PLASTER_PARAM_ModuleName}.psm1&quot;)"
+        destination="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psm1"
+        condition="-not (Test-Path &quot;${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psm1&quot;)"
     />
 
     <!--   MIT License -->
     <templateFile source="../LICENSES/LICENSE.MIT.template"
                   destination="${PLASTER_PARAM_ModuleName}/LICENSE"
-                  condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -and ${PLASTER_PARAM_LicenseType} -eq 'MIT'"
+                  condition="${PLASTER_PARAM_LicenseType} -eq 'MIT'"
     />
 
     <!--   APACHE License -->
     <templateFile source="../LICENSES/LICENSE.Apache.template"
                   destination="${PLASTER_PARAM_ModuleName}/LICENSE"
-                  condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -and ${PLASTER_PARAM_LicenseType} -eq 'Apache'"
+                  condition="${PLASTER_PARAM_LicenseType} -eq 'Apache'"
     />
 
 
@@ -413,7 +412,7 @@
    <!-- GITVERSION CONFIG YAML -->
    <templateFile source="../Git/GitVersion.yml.template"
           destination="${PLASTER_PARAM_ModuleName}/GitVersion.yml"
-          condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_UseGitHub} -eq 'true'"
+          condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_UseGitVersion} -eq 'true'"
     />
    
    <!-- MARKDOWN LINT -->
@@ -425,20 +424,24 @@
    <!-- VSCODE SETTINGS -->
    <file source="../VscodeConfig/settings.json"
           destination="${PLASTER_PARAM_ModuleName}/.vscode/settings.json"
+          condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_UseVSCode} -eq 'true'"
     />
 
     <!-- PSScriptAnalyzer VSCODE CONFIG -->
     <file source="../VscodeConfig/analyzersettings.psd1"
           destination="${PLASTER_PARAM_ModuleName}/.vscode/analyzersettings.psd1"
+          condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_UseVSCode} -eq 'true'"
     />
 
     <!-- VSCODE SETTINGS -->
     <file source="../VscodeConfig/extensions.json"
           destination="${PLASTER_PARAM_ModuleName}/.vscode/extensions.json"
+          condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_UseVSCode} -eq 'true'"
     />
     
     <file source="../VscodeConfig/tasks.json"
           destination="${PLASTER_PARAM_ModuleName}/.vscode/tasks.json"
+          condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_UseVSCode} -eq 'true'"
     />
 
    <!-- GITHUB TEMPLATES -->
