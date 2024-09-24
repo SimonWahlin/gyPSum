@@ -37,8 +37,6 @@
         'PSShouldProcess',
         'PSUseDeclaredVarsMoreThanAssignments',
         'PSUsePSCredentialType',
-
         'Measure-*'
     )
-
 }

@@ -27,28 +27,18 @@
     ChangelogManagement         = 'latest'
     Sampler                     = 'latest'
 <%
-    If ($PLASTER_PARAM_ModuleType -in @('dsccommunity','CompleteSample','CompleteModule') -or $PLASTER_PARAM_UseGitHub -eq 'true'  -or $PLASTER_PARAM_Features -Contains ('All') -or $PLASTER_PARAM_Features -Contains ('DSCResources')) {
+    If ($PLASTER_PARAM_ModuleType -in @('FullModule') -or $PLASTER_PARAM_UseGitHub -eq 'true') {
 @"
     'Sampler.GitHubTasks'       = 'latest'
 "@
     }
 %>
 <%
-    If ($PLASTER_PARAM_ModuleType -in @('dsccommunity','CompleteSample','CompleteModule') -or $PLASTER_PARAM_Features -Contains ('All') -or $PLASTER_PARAM_Features -Contains ('DSCResources')) {
+    If ($PLASTER_PARAM_ModuleType -in @('FullModule')) {
 @"
     MarkdownLinkCheck           = 'latest'
 "@
     }
 %>
-<%
-    If ($PLASTER_PARAM_ModuleType -in @('dsccommunity','CompleteSample') -or $PLASTER_PARAM_Features -Contains ('All') -or $PLASTER_PARAM_Features -Contains ('DSCResources')) {
-@"
-    'DscResource.Common'        = 'latest'
-    'DscResource.Test'          = 'latest'
-    'DscResource.AnalyzerRules' = 'latest'
-    xDscResourceDesigner        = 'latest'
-    'DscResource.DocGenerator'  = 'latest'
-"@
-    }
-%>
+
 }

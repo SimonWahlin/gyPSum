@@ -48,7 +48,7 @@
     <parameter name="ModuleVersion" type="text" prompt="Module version"  default="0.0.1" />
 
     <!--  USE GIT  -->
-    <parameter name="UseGit" type="choice" prompt="Will create a gitignore file and show parameters related to git" default="1" 
+    <parameter name="UseGit" type="choice" prompt="Create gitignore file and show parameters related to git" default="1" 
       condition="$PLASTER_PARAM_ModuleType -in @('CustomModule')" >
       <choice label="&amp;Yes" value="true" />
       <choice label="&amp;No" value="false" />
@@ -74,11 +74,11 @@
     </parameter>
 
     <!--  AZURE PIPELINES  -->
-    <parameter name="UseAzurePipelines" type="choice" prompt="Do you want to use Azure Pipelines to run the the build, test and or deploy pipeline?" 
+    <!-- <parameter name="UseAzurePipelines" type="choice" prompt="Do you want to use Azure Pipelines to run the the build, test and or deploy pipeline?" 
       default="1" condition="$PLASTER_PARAM_UseGit -eq 'true' -and $PLASTER_PARAM_ModuleType -notin @('MinimalModule')" >
       <choice label="&amp;Yes" value="true" />
       <choice label="&amp;No" value="false" />
-    </parameter>
+    </parameter> -->
 
     <!--  VSCODE  -->
     <parameter name="UseVSCode" type="choice" prompt="Will you use Visual Studio Code as the code editor for the project?" 
@@ -141,34 +141,13 @@
     />
 
     <!--   CLASSES Samples Files -->
-    <file source="../Classes/Classes/1.class1.ps1"
-          destination="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/Classes/1.class1.ps1"
-    />
-    <file source="../Classes/Classes/2.class2.ps1"
-          destination="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/Classes/2.class2.ps1"
-    />
-    <file source="../Classes/Classes/3.class11.ps1"
-          destination="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/Classes/3.class11.ps1"
-    />
-    <file source="../Classes/Classes/4.class12.ps1"
-          destination="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/Classes/4.class12.ps1"
+    <file source="../Classes/Classes/Something.ps1"
+          destination="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/Classes/Something.ps1"
     />
 
     <!--   UNIT TESTS Classes Sample Files -->
-    <file source="../Classes/tests/class1.tests.ps1"
-          destination="${PLASTER_PARAM_ModuleName}/Tests/Classes/class1.tests.ps1"
-          condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_Features} -Contains ('UnitTests')"
-    />
-    <file source="../Classes/tests/class2.tests.ps1"
-          destination="${PLASTER_PARAM_ModuleName}/Tests/Classes/class2.tests.ps1"
-          condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_Features} -Contains ('UnitTests')"
-    />
-    <file source="../Classes/tests/class11.tests.ps1"
-          destination="${PLASTER_PARAM_ModuleName}/Tests/Classes/class11.tests.ps1"
-          condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_Features} -Contains ('UnitTests')"
-    />
-    <file source="../Classes/tests/class12.tests.ps1"
-          destination="${PLASTER_PARAM_ModuleName}/Tests/Classes/class12.tests.ps1"
+    <file source="../Classes/tests/Something.tests.ps1"
+          destination="${PLASTER_PARAM_ModuleName}/Tests/Classes/Something.tests.ps1"
           condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_Features} -Contains ('UnitTests')"
     />
 
@@ -265,10 +244,10 @@
     />
 
     <!--   AZURE PIPELINES -->
-    <templateFile source="azure-pipelines.yml.template"
+    <!-- <templateFile source="azure-pipelines.yml.template"
           destination="${PLASTER_PARAM_ModuleName}/azure-pipelines.yml"
           condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or $PLASTER_PARAM_UseAzurePipelines -eq 'true'"
-    />
+    /> -->
     
     <!-- MODULE MANIFEST -->
     <newModuleManifest destination="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1"
@@ -356,8 +335,8 @@
     <modify path="${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1"
         condition="Test-Path &quot;${PLASTER_PARAM_ModuleName}/$(${PLASTER_PARAM_SourceDirectory} ?? 'Source')/${PLASTER_PARAM_ModuleName}.psd1&quot;">
             <replace>
-                  <original><![CDATA[(})\n+$]]></original>
-                  <substitute>$1</substitute>
+                  <original><![CDATA[}[\r\n]+$]]></original>
+                  <substitute>}</substitute>
             </replace>
     </modify>
 
@@ -390,12 +369,12 @@
           destination="${PLASTER_PARAM_ModuleName}/CONTRIBUTING.md"
           condition="${PLASTER_PARAM_ModuleType} -in @('FullModule')"
     />
-
+ 
    <!-- CODE OF CONDUCT MD -->
-   <file source="CODE_OF_CONDUCT.md"
+   <!-- <file source="CODE_OF_CONDUCT.md"
           destination="${PLASTER_PARAM_ModuleName}/CODE_OF_CONDUCT.md"
           condition="${PLASTER_PARAM_ModuleType} -in @('FullModule')"
-    />
+    /> -->
 
    <!-- SECURITY MD GENERIC -->
    <file source="SECURITY.md"
@@ -470,8 +449,13 @@
           condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_UseGitHub} -eq 'true'"
     />
 
-    <templateFile source="../GithubConfig/ISSUE_TEMPLATE/Problem_with_module.yml.template"
-          destination="${PLASTER_PARAM_ModuleName}/.github/ISSUE_TEMPLATE/Problem_with_module.yml"
+    <file source="../GithubConfig/ISSUE_TEMPLATE/FeatureRequest.md"
+          destination="${PLASTER_PARAM_ModuleName}/.github/ISSUE_TEMPLATE/FeatureRequest.md"
+          condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_UseGitHub} -eq 'true'"
+    />
+
+    <file source="../GithubConfig/ISSUE_TEMPLATE/Bug.md"
+          destination="${PLASTER_PARAM_ModuleName}/.github/ISSUE_TEMPLATE/Bug.md"
           condition="${PLASTER_PARAM_ModuleType} -in @('FullModule') -or ${PLASTER_PARAM_UseGitHub} -eq 'true'"
     />
   </content>

@@ -3,7 +3,7 @@
 #          ModuleBuilder Configuration             #
 ####################################################
 <%
-    if ($PLASTER_PARAM_ModuleType -notin ('dsccommunity', 'SimpleModule')) {
+    if ($PLASTER_PARAM_ModuleType -notin ('MinimalModule')) {
 @"
 # Path to the Module Manifest to build (where path will be resolved from)
 # SourcePath: ./Sampler/Sampler.psd1
@@ -14,16 +14,8 @@
 %>
 BuiltModuleSubdirectory: module
 CopyPaths:
-  - en-US
-<%
-    if ($PLASTER_PARAM_ModuleType -eq 'dsccommunity' -or $PLASTER_PARAM_Features -Contains ("All") -or $PLASTER_PARAM_Features -Contains ("DSCResources")) {
-"  - DSCResources"
-    }
-    else {
-"#  - DSCResources"
-    }
-%>
-  # - Modules
+#  - en-US
+# - Modules
 Encoding: UTF8
 # Can be used to manually specify module's semantic version if the preferred method of
 # using GitVersion is not available, and it is not possible to set the session environment
@@ -31,49 +23,16 @@ Encoding: UTF8
 # PowerShell session (parent scope) before running the task `build`.
 #SemVer: '99.0.0-preview1'
 
-<%
-    if ($PLASTER_PARAM_ModuleType -ne 'dsccommunity') {
-@"
 # Suffix to add to Root module PSM1 after merge (here, the Set-Alias exporting IB tasks)
 # suffix: suffix.ps1
 # prefix: prefix.ps1
-"@
-    }
-"VersionedOutputDirectory: true"
-%>
+VersionedOutputDirectory: true
 
 ####################################################
 #      ModuleBuilder Submodules Configuration      #
 ####################################################
 
 NestedModule:
-<%
-    if ($PLASTER_PARAM_ModuleType -eq 'dsccommunity') {
-@"
-    DscResource.Common:
-      CopyOnly: true
-      Path: ./output/RequiredModules/DscResource.Common
-      AddToManifest: false
-      Exclude: PSGetModuleInfo.xml
-"@
-    }
-    elseif ($PLASTER_PARAM_Features -Contains ("All") -or $PLASTER_PARAM_Features -Contains ("DSCResources")) {
-@"
-  DscResource.Common:
-    CopyOnly: true
-    Path: ./output/RequiredModules/DscResource.Common # relative to $buildroot, default to '$sourcePath/Modules/$NestedModuleName'
-    # Destination: './output/$ProjectName/$ModuleVersionFolder/Modules/$NestedModuleName' # or override with path relative to $buildroot
-    AddToManifest: false
-    # include: '*.*'
-    Exclude: PSGetModuleInfo.xml
-    #Filter:
-  Folder.Common:
-    CopyOnly: true
-    AddToManifest: false
-"@
-  }
-  else {
-@"
 #  HelperSubmodule: # This is the first submodule to build into the output
 #    Path: ./*/Modules/HelperSubmodule/HelperSubmodule.psd1
 #    # $ModuleVersionFolder is trimmed (remove metadata & Prerelease tag) and OutputDirectory expanded (the only one)
@@ -83,60 +42,25 @@ NestedModule:
 #    SemVer: $ModuleVersionFolder
 #    # suffix:
 #    # prefix:
-"@
-}
-
-%>
 
 ####################################################
 #       Sampler Pipeline Configuration             #
 ####################################################
-<%
-    if ($PLASTER_PARAM_ModuleType -eq 'dsccommunity') {
-@"
-BuildWorkflow:
-  '.':
-    - build
-    - test
-"@
-    }
-    else {
-@"
 # Defining 'Workflows' (suite of InvokeBuild tasks) to be run using their alias
 BuildWorkflow:
   '.': # "." is the default Invoke-Build workflow. It is called when no -Tasks is specified to the build.ps1
-    - build
-    - test
-"@
-    }
-%>
+  - build
+  - test
 
   build:
     - Clean
     - Build_Module_ModuleBuilder
     - Build_NestedModules_ModuleBuilder
-    - Create_changelog_release_output
-<%
-    if($PLASTER_PARAM_ModuleType -in @('dsccommunity')) {
-@"
-    - Generate_Conceptual_Help
-    - Generate_Wiki_Content
-"@
-    }
-%>
+  #  - Create_changelog_release_output
 
   pack:
     - build
     - package_module_nupkg
-
-<%
-    if($PLASTER_PARAM_ModuleType -in @('dsccommunity')) {
-@"
-  hqrmtest:
-    - DscResource_Tests_Stop_On_Fail
-"@
-    }
-%>
 
   # Defining test task to be run when invoking `./build.ps1 -Tasks test`
   test:
@@ -155,7 +79,7 @@ BuildWorkflow:
 
   publish:
 <%
-    if($PLASTER_PARAM_ModuleType -in @('dsccommunity', 'CompleteSample') -or $PLASTER_PARAM_Features -Contains ('All')) {
+    if($PLASTER_PARAM_ModuleType -in @('FullModule') -or $PLASTER_PARAM_Features -Contains ('All')) {
 @"
     - Publish_Release_To_GitHub # Runs first, if token is expired it will fail early
     - Publish_GitHub_Wiki_Content
@@ -178,34 +102,12 @@ BuildWorkflow:
 Pester:
   OutputFormat: NUnitXML
   # Excludes one or more paths from being used to calculate code coverage.
-  ExcludeFromCodeCoverage:
-<%
-    if ($PLASTER_PARAM_ModuleType -eq 'dsccommunity') {
-@"
-    - Modules/DscResource.Common
-"@
-    }
-    elseif ($PLASTER_PARAM_Features -Contains ("All") -or $PLASTER_PARAM_Features -Contains ("DSCResources"))
-    {
-@"
-    - Modules/DscResource.Common
-    # - Template
-"@
-    }
-%>
+  # ExcludeFromCodeCoverage:
   # If no scripts are defined the default is to use all the tests under the project's
   # tests folder or source folder (if present). Test script paths can be defined to
   # only run tests in certain folders, or run specific test files, or can be use to
   # specify the order tests are run.
   Script:
-<%
-    if ($PLASTER_PARAM_ModuleType -eq 'dsccommunity') {
-@"
-    - tests/Unit
-"@
-    }
-    else {
-@"
   # - tests/QA/module.tests.ps1
   # - tests/QA
   # - tests/Unit
@@ -214,25 +116,16 @@ Pester:
   #  - helpQuality
   #  - FunctionalQuality
   #  - TestQuality
-"@
-    }
-%>
+
   Tag:
   CodeCoverageThreshold: 85 # Set to 0 to bypass
-<%
-    if ($PLASTER_PARAM_ModuleType -eq 'dsccommunity') {
-@"
+
   CodeCoverageOutputFile: JaCoCo_coverage.xml
   CodeCoverageOutputFileEncoding: ascii
-"@
-    }
-    else {
-@'
+
   #CodeCoverageOutputFile: JaCoCo_$OsShortName.xml
   #CodeCoverageOutputFileEncoding: ascii
-'@
-    }
-%>
+
   # Use this if code coverage should be merged from several pipeline test jobs.
   # Any existing keys above should be replaced. See also CodeCoverage below.
   # CodeCoverageOutputFile is the file that is created for each pipeline test job.
@@ -246,34 +139,6 @@ Pester:
 #CodeCoverage:
   #CodeCoverageFilePattern: JaCoCo_Merge.xml # the pattern used to search all pipeline test job artifacts
   #CodeCoverageMergedOutputFile: JaCoCo_coverage.xml # the file that is created for the merged code coverage
-<%
-    if ($PLASTER_PARAM_ModuleType -eq 'dsccommunity' -or $PLASTER_PARAM_ModuleType -match 'complete' -or $PLASTER_PARAM_Features -Contains ("All") -or $PLASTER_PARAM_Features -Contains ("DSCResources"))
-    {
-@"
-
-DscTest:
-  ExcludeTag:
-    - "Common Tests - New Error-Level Script Analyzer Rules"
-  Tag:
-  ExcludeSourceFile:
-    - output
-  ExcludeModuleFile:
-"@
-    }
-
-    if ($PLASTER_PARAM_ModuleType -eq 'dsccommunity') {
-@"
-    - Modules/DscResource.Common
-"@
-    }
-    elseif ($PLASTER_PARAM_ModuleType -match 'complete' -or $PLASTER_PARAM_Features -Contains ("All") -or $PLASTER_PARAM_Features -Contains ("DSCResources"))
-    {
-@"
-    - Modules/DscResource.Common
-  #  - Templates
-"@
-    }
-%>
 
 # Import ModuleBuilder tasks from a specific PowerShell module using the build
 # task's alias. Wildcard * can be used to specify all tasks that has a similar
@@ -283,18 +148,10 @@ ModuleBuildTasks:
   Sampler:
     - '*.build.Sampler.ib.tasks'
 <%
-    if($PLASTER_PARAM_ModuleType -in @('dsccommunity', 'CompleteSample') -or $PLASTER_PARAM_UseGitHub -eq 'true' -or $PLASTER_PARAM_Features -Contains ("All") -or $PLASTER_PARAM_Features -Contains ("GitHub")) {
+    if($PLASTER_PARAM_ModuleType -in @('FullModule') -or $PLASTER_PARAM_UseGitHub -eq 'true') {
 @"
   Sampler.GitHubTasks:
     - '*.ib.tasks'
-"@
-    }
-%>
-<%
-    if($PLASTER_PARAM_ModuleType -in @('dsccommunity')) {
-@"
-  DscResource.DocGenerator:
-    - 'Task.*'
 "@
     }
 %>
@@ -310,20 +167,6 @@ TaskHeader: |
   Write-Build DarkGray "  $Path"
   Write-Build DarkGray "  $($Task.InvocationInfo.ScriptName):$($Task.InvocationInfo.ScriptLineNumber)"
   ""
-<%
-    if($PLASTER_PARAM_ModuleType -in @('dsccommunity')) {
-@"
-
-GitHubConfig:
-  GitHubFilesToAdd:
-    - 'CHANGELOG.md'
-  GitHubConfigUserName: dscbot
-  GitHubConfigUserEmail: dsccommunity@outlook.com
-  UpdateChangelogOnPrerelease: false
-"@
-    }
-    elseif ($PLASTER_PARAM_Features -Contains ("All") -or $PLASTER_PARAM_Features -Contains ("GitHub")) {
-@"
 
 # Below is the GitHub configuration to automatically create a PR to update the Changelog
 # after the release of a version. (see Create_ChangeLog_GitHub_PR task of Sampler.GitHubTasks)
@@ -333,42 +176,3 @@ GitHubConfig:
 #   GitHubConfigUserName: YourAccountUserName
 #   GitHubConfigUserEmail: youremail@yourprovider.com
 #   UpdateChangelogOnPrerelease: false
-"@
-    }
-%>
-
-<%
-    if ($PLASTER_PARAM_ModuleType -eq 'dsccommunity' -or $PLASTER_PARAM_Features -Contains ("All")) {
-@"
-####################################################
-#      DscResource.DocGenerator Configuration      #
-####################################################
-DscResource.DocGenerator:
-  Generate_Conceptual_Help:
-    MarkdownCodeRegularExpression:
-      - '\```(.+?)\```' # Match inline code-block
-      - '\\(\\)' # Match escaped backslash
-      - '\[[^\[]+\]\((.+?)\)' # Match markdown URL
-      - '_(.+?)_' # Match Italic (underscore)
-      - '\*\*(.+?)\*\*' # Match bold
-      - '\*(.+?)\*' # Match Italic (asterisk)
-"@
-    }
-%>
-
-<%
-    if ($PLASTER_PARAM_ModuleType -eq 'dsccommunity' -or $PLASTER_PARAM_Features -Contains ("All")) {
-@"
-####################################################
-#           Setting Sampler PSModulePath           #
-####################################################
-#SetPSModulePath:
-  #Sub expressions in the PSModulePath are supported but not part of the template as it does not work with Plaster
-  #PSModulePath: C:\Program Files\WindowsPowerShell\Modules;C:\Windows\system32\WindowsPowerShell\v1.0\Modules;c:\Users\Install\.vscode\extensions\ms-vscode.powershell-2022.5.1\modules;
-  #RemovePersonal: false
-  #RemoveProgramFiles: false
-  #RemoveWindows: false
-  #SetSystemDefault: false
-"@
-    }
-%>

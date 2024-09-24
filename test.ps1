@@ -1,10 +1,8 @@
 <#
-    Get-Something.ps1 ends up in source/test/public instead of source/pubic
-    Get-Something.ps1 is not used as template
-    Lots of empty newlines in manifest file
-    Get-Something.test.ps1.template is not templating
-    rename parameter usegit to SetGitConfiguration (or something like that)
-  
+    TODO:
+    * Fix GitVersion config
+    * PlatyPS
+
 #>
 
 $BaseParams = @{
@@ -21,7 +19,7 @@ $testcases = @(
         MainGitBranch     = 'main'
         UseGitVersion     = $true
         UseGitHub         = $false
-        UseAzurePipelines = $false
+        # UseAzurePipelines = $false
         UseVSCode         = $true
         LicenseType       = 'MIT'
         SourceDirectory   = 'Source'
@@ -39,11 +37,11 @@ $testcases = @(
         MainGitBranch     = 'mastah' # ONLY REQUIRED WHEN USING GITVERSION
         UseGitVersion     = $true
         UseGitHub         = $true
-        UseAzurePipelines = $false
+        # UseAzurePipelines = $false
         UseVSCode         = $true
         LicenseType       = 'MIT'
         SourceDirectory   = 'Source'
-        Features          = @('Unittests') # NO MODULE TESTS, ONLY FOLDERS WITH TESTS
+        Features          = @('Unittests')
     },
     @{
         ModuleType        = 'CustomModule'
@@ -51,7 +49,7 @@ $testcases = @(
         MainGitBranch     = 'main'
         UseGitVersion     = $false
         UseGitHub         = $true
-        UseAzurePipelines = $true
+        # UseAzurePipelines = $true
         UseVSCode         = $false
         LicenseType       = 'MIT'
         SourceDirectory   = 'Source'
@@ -63,7 +61,7 @@ $testcases = @(
         MainGitBranch     = 'main'
         UseGitVersion     = $false
         UseGitHub         = $true
-        UseAzurePipelines = $true
+        # UseAzurePipelines = $true
         UseVSCode         = $false
         LicenseType       = 'MIT'
         SourceDirectory   = 'src'
@@ -75,7 +73,7 @@ $testcases = @(
         MainGitBranch     = 'main'
         UseGitVersion     = $false
         UseGitHub         = $true
-        UseAzurePipelines = $true
+        # UseAzurePipelines = $true
         UseVSCode         = $false
         LicenseType       = 'MIT'
     }
