@@ -41,8 +41,11 @@
     <!-- Folder structure -->
     <file source='' destination='${PLASTER_PARAM_ModuleName}/Source' />
     <file source='' destination='${PLASTER_PARAM_ModuleName}/Source/Private' />
+    <file source='.gitkeep' destination='${PLASTER_PARAM_ModuleName}/Source/Private' />
     <file source='' destination='${PLASTER_PARAM_ModuleName}/Source/Public' />
+    <file source='.gitkeep' destination='${PLASTER_PARAM_ModuleName}/Source/Public' />
     <file source='' destination='${PLASTER_PARAM_ModuleName}/Source/Classes' />
+    <file source='.gitkeep' destination='${PLASTER_PARAM_ModuleName}/Source/Classes' />
     <file source='source/_PrefixCode.ps1' destination='${PLASTER_PARAM_ModuleName}/Source/_PrefixCode.ps1' />
     <!-- Manifest -->
     <newModuleManifest destination='${PLASTER_PARAM_ModuleName}/Source/${PLASTER_PARAM_ModuleName}.psd1' moduleVersion='$PLASTER_PARAM_Version' rootModule='${PLASTER_PARAM_ModuleName}.psm1' author='${PLASTER_PARAM_FullName}' companyName='${PLASTER_PARAM_Company}' description='${PLASTER_PARAM_ModuleDescription}' encoding='UTF8-NoBOM'/>
