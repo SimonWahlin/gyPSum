@@ -52,16 +52,17 @@ task TestCode {
 
 task CompilePSM {
     Write-Build Yellow "`n`n`nCompiling all code into single psm1"
+    $BuildParams = @{}
     try {
-        $BuildParams = @{}
-        if((Get-Command -ErrorAction stop -Name gitversion)) {
-            $GitVersion = gitversion | ConvertFrom-Json | Select-Object -Expand FullSemVer
-            $GitVersion = gitversion | ConvertFrom-Json | Select-Object -Expand InformationalVersion
-            $BuildParams['SemVer'] = $GitVersion
-        }
+        $GitVersionCMD = Get-Command -CommandType Application | Where-Object {$_.Name -like "*gitversion*"} | Sort-Object -Property Version -Descending -Top 1
     }
     catch{
         Write-Warning -Message 'gitversion not found, keeping current version'
+    }
+    if($GitVersionCMD) {
+        $GitVersion = &$GitVersionCMD | ConvertFrom-Json | Select-Object -Expand FullSemVer
+        $GitVersion = &$GitVersionCMD | ConvertFrom-Json | Select-Object -Expand InformationalVersion
+        $BuildParams['SemVer'] = $GitVersion
     }
     Push-Location -Path "$BuildRoot\Source" -StackName 'InvokeBuildTask'
     $Script:CompileResult = Build-Module @BuildParams -Passthru
