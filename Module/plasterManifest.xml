@@ -30,7 +30,7 @@
       <choice label='&amp;Pester test support' help="Adds Tests directory and a starter Pester Tests file." value="Pester"/>
       <choice label='P&amp;Sake build script' help="Adds a PSake build script that generates the module directory for publishing to the PSGallery." value="PSake"/>
       <choice label='Invoke-&amp;Build build script' help="Adds an Invoke-Build build script that generates the module directory for publishing to the PSGallery." value="InvokeBuild"/>
-      <choice label='&amp;Gitingore' help="Adds a .gitignore file." value="Gitignore"/>
+      <choice label='&amp;Gitignore' help="Adds a .gitignore file." value="Gitignore"/>
       <choice label='&amp;Readme' help="Adds a Readme.md file." value="Readme"/>
       <choice label='&amp;Appveyor' help="Adds an Appveyor.yml file." value="Appveyor"/>
       <choice label='&amp;None' help="No options specified." value="None"/>
