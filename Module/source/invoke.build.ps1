@@ -47,7 +47,7 @@ task Analyze {
 task TestCode {
     Write-Build Yellow "`n`n`nTesting dev code before build"
     $TestResult = Invoke-Pester -Path "$PSScriptRoot\Test\Unit" -Tag Unit -PassThru
-    if($TestResult.FailedCount -gt 0) {throw 'Tests failed'}
+    if(($TestResult.FailedCount + $TestResult.FailedBlocksCount + $TestResult.FailedContainersCount) -gt 0) {throw 'Tests failed'}
 }
 
 task CompilePSM {
@@ -90,7 +90,7 @@ task TestBuild {
     $TestResult.CodeCoverage|Add-Member -MemberType NoteProperty -Name MissedCommands -Value $TestResult.CodeCoverage.CommandsMissed
     Remove-Item $PSScriptRoot\coverage.xml -ErrorAction SilentlyContinue
 
-    if($TestResult.FailedCount -gt 0) {
+    if(($TestResult.FailedCount + $TestResult.FailedBlocksCount + $TestResult.FailedContainersCount) -gt 0) {
         Write-Warning -Message "Failing Tests:"
         $TestResult.TestResult.Where{$_.Result -eq 'Failed'} | ForEach-Object -Process {
             Write-Warning -Message $_.Name
